@@ -1,0 +1,62 @@
+
+\section{The Advertiser Precedence Constraints algorithm}
+\sec{label:exact}
+
+In this section, we provide an exact algorithm for the 'monotone location' case.
+In this special case there exists monotone decreasing function $\ell$ of click probability, which correspond to the assumption that the higher the ad in the page the more likely that the ad will be clicked.
+The profit for assigning  ad $i$ of advertiser $j$ with size $s_{j,i} \in A_j$ starting form line $t$ is
+$$w(j,i,t) = B_{j,i}\cdot C_{j,i} \cdot \int_{r=t}^{t+s_{j,i}} \ell(r)$$
+where $B_{j,i}, C_{j,i}$ is the bid and click-ability of ad $i$. 
+In addition, we have cardinality constraint, i.e. the are at most $Q$ ads in a page.  
+Since $\ell$ is monotone function, it is easy to verify that the optimal solution is order subset of the ads i.e. $\{ \{j_1,i_1\},\{j_2,i_2\}\dots \{j_o,i_o\} \}$,$o\in \{1\dots Q\}$ where the ad position of $\{j_k,i_k\}$, $k\in \{1\dots o\}$ is $\sum_{r=1}^{k-1} s_{j_r,i_r}$. 
+
+\textbf{The na{\"i}ve algorithm}.
+Let $m = \max_j \{ |A_j| \}$ be the maximal number of sizes of ads per advertiser, then the na{\"i}ve algorithm which enumerate over all possible allocation might need to evaluate ${n \choose Q} Q! m^Q$ options.
+
+\textbf{The Advertiser Precedence Constraints algorithm}. In order to significantly reduce the number of options to evaluate. The algorithm uses that $\ell$ is monotone and that the advertiser ads are highly correlated i.e. $B_{j,i} \cdot C_{j,i} \approx B_{j,{i'}} \cdot C_{j,i'}$.
+ Let $H(t,s) = \int_{r=t}^{t+s} \ell(r)$, and let $R(s,d) = \max_t \frac{H(t,s)}{H(t,d)}$, and $\{j,i\}$ is the $i$ ad of advertiser $j$.   
+
+We define order on the ads such that  $\{j,i\} \succ \{j',i'\}$ (ad $\{j,i\}$ succeed ad $\{j',i'\}$) if:
+\begin{itemize}
+	\item $s_{j,i} \leq s_{j',i'}$
+	\item $B_{j,i}\cdot C_{j,i} > B_{j',i'}\cdot C_{j',i'} \cdot R(s_{j,i}, s_{j',i'})$
+\end{itemize}
+
+If $i,i'$ is the only ad of $j,j'$ (respectively) is easy to observe that, if both ads are in the optimal solution the ad $\{i,j\}$ appear higher than ad $\{i',j'\}$ (by swapping the ads position), and if only one ad of the two is in the solution it must be ad $\{i,j\}$ (by replacing the assignment).
+
+We expand this definition also for advertisers, $j \succ j'$ (advertiser $j$ succeed advertiser $j'$) if
+\begin{itemize}
+	\item $\min_i \{B_{j,i}\cdot C_{j,i} \} > \max_{i'} \{B_{j',i'}\cdot C_{j',i'} \}$
+	\item for all $i' \in A_{j'}$ exists $i \in A_{j}$ s.t. $\{i,j\} \succ \{i',j'\}$
+\end{itemize}
+
+It easy to observe that if  $j \succ j'$ then, in the optimal solution
+\begin{itemize}
+	\item If both advertisers $j,j'$ is in the solution the advertiser $j$ succeed advertiser $j'$ (by swapping).
+	\item If one advertiser is in the solution then it must be $j$ (by replacing).
+\end{itemize}
+
+Using this relation, we define graph $G$ where the vertices are $\cJ$ and there exists a directed edge from $j$ to $j'$ if $j \succ j'$. 
+Let $\{ \{j_1,i_1\},\{j_2,i_2\}\dots \{j_o,i_o\} \}$ be the optimal solution. Using the previous observation we conclude for all $r\in \{1\dots Q\}$ the in-degree of $j_r$ in the graph $G\setminus \{j_1,\dots,j_{r-1}\}$ is $0$. This yields the following algorithm
+
+\begin{algorithm}
+	\caption{The Advertiser Precedence Constraints Algorithm}\label{euclid}
+	\begin{algorithmic}[1]
+		\State $G \gets BuildGraph(\cJ,\succ)$
+		\State EvaluateRec($G$,$\emptyset$)
+		\Procedure{EvaluateRec}{$G,S$}
+		\If{$|S| = Q$}
+		\State Evaluate($S$)
+		\State \Return 
+		\EndIf
+		\ForAll{$ \{j | InDegree(j,G) = 0\}$}
+		\ForAll{$i \in A_j$}
+			\State EvaluateRec($G\setminus \{j\}$, $S \cup \{\{j,i\}\}$)
+		\EndFor
+		\EndFor
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+Note that, if we have full order on the advertisers, the number of evaluation reduce to $m^Q$. 
+

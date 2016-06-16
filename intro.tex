@@ -1,0 +1,15 @@
+\section{Introduction}
+\label{sec:intro}
+
+Search advertising is a multi-billion dollar industry and trillions of advertisements are displayed yearly.  Due to this, a vast literature has been developed on how to display search advertisements to optimize various objectives, such as maximizing revenue or click through rates. There are two widely studied scenarios for ad allocation.  One is when the search provider has contracts with the advertisers, such as showing an advertisement to at least a specified number of users per month, and where an auction is performed to amongst advertisers to decide which ads to display.  Throughout this paper, we will focus on the auction setting. 
+
+
+ In a typical setting, there are  are $n$ advertisers.  When a search query is performed, each advertiser \emph{bids} to have their ads displayed.  The goal is for the search provider to decide which advertisements to display that optimizes some objective function.  The advertisers whose ads are displayed, pay the search provider an amount that is a function of their bid and the bids of others.  In this scenario, the search provider must decide (1) the ads to display and (2) how much to charge each advertiser.
+ 
+When displaying ads on a search query, there are multiple positions where each ad can be placed. For major search providers, such as Yahoo and Google, there is a number of lines ads can be displayed on at the top, right and bottom of the webpage.  These are known as the top, right and bottom footprints, respectively.  Each ad is designed to be placed in one of the footprints and advertisers are typically willing to bid more to be placed in a higher position in any of the footprints.
+ 
+ Most previous work that has investigated this setting maps the problem to bipartite matching.  There is a bipartite graph $G$ with ads on the left and positions on the right. The goal is to  
+
+
+
+

@@ -1,0 +1,27 @@
+
+
+
+\section{Strong NP-Hardness}
+\label{sec:hardness}
+
+
+\begin{theorem}
+The ad placement problem is strongly NP-hard  (without advertiser constraints or cardinality constraints) and $\Delta \leq 2$
+\end{theorem}
+
+\begin{proof}
+
+We will show that the problem is strongly NP-Hard via a reduction from $3$-partition.  In the $3$-partition problem, we are given a parameter $B$ and a set of $3n$ items of sizes $a_1, a_2, \ldots a_n$.  The goal is to partition the items into $n$ sets, each containing three items, $S_1, S_2, \ldots, S_n$ such that for all $i$ it is the case that $\sum_{j \in S_i} a_j = B$.  It can be assumed that all sizes are integers in $(B/4,B/2)$ and that $B$ is bounded by $n^{c}$ for some constant $c$ \cite{XXX}.  
+
+Consider any instance $I$ of the $3$-partition problem.  From this, we create an instance $I'$ of the interval ad placement problem.  For each item $j \in I$ we create a unique advertiser and a single ad of size $s_{j,1} = a_j$.    If the ad is placed at line $t$ such that $t+s_{j,1} \in (kB, (k+1)B)]$, then the profit is $\frac{s_{j,1}}{2B-\frac{k}{n}B }$ for integer $k \in \{0,1,\ldots, 3B\}$.    We claim that if there is a solution of value $V := \sum_{k=0}^{n-1} \frac{B}{2B-\frac{k}{n}B}$ or greater if and only if  $I$ is a yes instance of the $3$-partition problem.  
+
+First we show that if $I$ is a yes instance of the $3$-partition problem then there is a solution to the advertiser placement problem of value $V$.  Let $S_1, S_2, \ldots S_n$ be a valid partition of $I$.  We place the ads in $I'$ such that the ads corresponding to items in $S_i$ appear before $S_{i+1}$.  Within each set $S_i$, the ads are placed in an arbitrary order.   Notice that since for each $i$ it is the case that $\sum_{j \in S_i} s_{j,1} = \sum_{j \in S_i} a_{j} =B$  it is the case that if $j \in S_i$ then $j +s_{j,1}  \in ((i-1)B, iB)]$.  Thus, the total profit is exactly $\sum_{k=0}^{n-1}\sum_{j \in S_k} \frac{s_{j,1}}{2B-\frac{k}{n}B} =\sum_{k=0}^{n-1} \frac{B}{2B-\frac{k}{n}B} = V$.
+
+Alternatively, consider the case where $I$ is a no instance to the $3$-partition problem.  In this case,  we claim that any solution to the ad placement problem has value strictly less than $V$.  Say this is not the case any consider a solution $S$ to $I'$.   We begin by defining the profit for each line in the solution $S$.  Let $w_t$ be the profit obtained for the ad placed at line $t$.  If there is no such advertiser then $w_t = 0$.  We say that a profit $p_t = w_t /s_{j,1}$ is obtained for line $t$ if ad $j$ is the ad placed at line $t$. The first observation is that $\sum_t p_t$ is the profit obtained by the solution $S$. Further, during the interval $[kB,(k+1)B]$, the total profit that can be obtained in any solution is $\frac{B}{2B-\frac{k}{n}B}$ by definition of the profits.
+
+Knowing that $I$ is a no instance, consider the smallest $k^*$ such that there is not three ads scheduled during the interval $[k^*B,(k^*+1)B]$ which fit perfectly in the interval.  Note that $k^*$ exists since $I$ is a no instance. We know that since the sizes of the ads are \emph{strictly} between $B/4$ and $B/2$, it must be the case that either there is no ad scheduled at a line during $[k^*B,(k^*+1)B]$ or there is an ad placed during $[k^*B,(k^*+1)B]$ that completes on a line after $(k^*+1)B$.  This implies that there is a line $t$ during $[k^*B,(k^*+1)B]$ with profit less that $\frac{1}{2B-\frac{k^*}{n}B}$ and the total profit obtained for lines in  $[k^*B,(k^*+1)B]$  is strictly less than $\frac{B}{2B-\frac{k^*}{n}B}$. However, then the most profit that can be obtained for all other lines is at most $\sum_{k=1}^{k^*-1}\frac{B}{2B-\frac{k}{n}B}  + \sum_{k=k^*+1}^{n-1}\frac{B}{2B-\frac{k}{n}B}  $.  Adding this the profit obtained for lines in $[k^*B,(k^*+1)B]$ must be strictly less than $V$.
+
+Finally, note that we can normalize the ad sizes so that all sizes are between $1$ and $2$ since the sizes are between $(B/4,B/2)$ in the above reduction.
+
+\end{proof}
+

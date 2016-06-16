@@ -1,0 +1,7 @@
+
+\section{Preliminaries}
+\label{sec:prelim}
+
+
+ There is a set $\cJ$ of $n$ possible advertisers.  Each advertiser $j$ has a set of $A_j$ of possible sizes.  We will refer to a size in $A_j$ as an ad for advertiser $j$.  We let $s_{j,i}$ be the $i$th size for advertiser $j$ assuming that the sizes are sorted in decreasing order.  We assume all sizes are distinct for each advertiser.  Each advertiser $j$ has a profit $w(j,i,t)$ for placing size $s_{j,i}$ at line $t$.  Profits are monotonically decreasing in the line the ad is placed.  The tuple $(i,j,t)$ denotes the interval corresponding to placing advertiser $j$ of size $i$ at line $t$. We assume that no two ads can overlap.  That is, if tuple $(j,i,t)$ is selected then no other ad can start in the range $[t,t+s_{j,i}]$.   Let $\cA$ be the set of all possible tuples $(i,j,t)$.   We assume that at most one ad per advertiser can be chosen.  Let $W(S) = \sum_{(i,j,t) \in S} w(i,j,t)$ be the profit for assigning the tuples in $S$ if $S$ contains at most one tuple per advertiser.    Let $\Delta$ be the maximum ad size.  We assume the minimum ad size is normalized to $1$. Throughout this paper, we let $0 <\eps \leq \frac{1}{10}$ be a fixed constant.   We will let $\beta$ be the maximum number of ads that can be shown if there is a cardinality constraint.
+

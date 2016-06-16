@@ -1,0 +1,83 @@
+\documentclass[11pt]{article}
+
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{amsfonts,amsthm,amssymb}
+\usepackage{euscript}
+\usepackage{amstext}
+\usepackage{graphicx}
+\usepackage{color}
+%\usepackage{picins}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{url,hyperref}
+
+\setlength{\textwidth}{6.5in} \setlength{\topmargin}{0.0in}
+\setlength{\headheight}{0in} \setlength{\headsep}{0.0in}
+%\setlength{\topsep}{0in}
+\setlength{\textheight}{9in} \setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+
+
+\newtheorem{fact}{Fact}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{assumption}[lemma]{Assumption}
+\newtheorem{definition}[lemma]{Definition}
+\newtheorem{corollary}[lemma]{Corollary}
+\newtheorem{proposition}[lemma]{Proposition}
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{remark}[lemma]{Remark}
+\newtheorem{prob}{Problem}
+\newtheorem{conjecture}{Conjecture}
+
+\newtheorem{observation}{Observation}
+
+%\newenvironment{proof}{\vspace{-0.15in}\noindent{\bf Proof:}}%
+%        {\hspace*{\fill}$\Box$\par}
+\renewcommand{\proofname}{\textbf{Proof}}
+\newenvironment{proofof}[1]{\smallskip\noindent{\bf Proof of #1}}%
+        {\hspace*{\fill}$\Box$\par}
+        
+\newcommand{\etal}{et al.\ }
+
+\newcommand{\tdo}{\tilde{O}}
+\newcommand{\tds}{\tilde{S}}
+
+%mathcal
+\newcommand{\cA}{{\cal A}}
+\newcommand{\cJ}{{\cal J}}
+\newcommand{\cP}{{\cal P}}
+\newcommand{\cR}{{\cal R}}
+\newcommand{\cE}{{\cal E}}
+\newcommand{\opt}{\textsc{OPT}{}}
+\newcommand{\eps}{\epsilon}
+\newcommand{\Algorithm}[1]{{\texttt{\bf{#1}}}} %An algorithm%
+\newcommand{\lsInterval}{\Algorithm{LS}}
+
+\begin{document}
+
+\title{Local Search for Ad Placement}
+%\author{Ben}
+\maketitle
+
+\input{intro}
+
+\input{prelim}
+
+\input{exact}
+
+\input{ls}
+
+\input{hardness}
+
+
+
+
+
+
+\end{document}
+
+
+
+

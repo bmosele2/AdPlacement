@@ -1,0 +1,194 @@
+
+
+\section{Local Search for Ad Placement}
+\labe{sec:ls}
+
+In this section, we consider the case where there are  advertiser constraints, interval constraints and a cardinality constraint.  The goal a maximum weight set of intervals that do not intersect and at most one interval per advertiser.
+
+
+
+\begin{algorithm}[H]
+\caption{Local Search Algorithm}
+%$\lsInterval$ \label{alg:ls}
+\begin{algorithmic}[1]
+\STATE $S^*,S \leftarrow \emptyset$
+\STATE $\alpha \gets 1$
+\WHILE{$\alpha \neq 0$}
+%\STATE $S^* \gets S$
+\FOR{every feasible set $S'$ of ads such that $|S'| \leq \frac{10}{\eps}\Delta$}
+\STATE $\alpha \gets 0$ 
+\STATE $B \gets$ all tuples $(j,i,t) \in S$ that intersect a tuple in $S'$
+\STATE $C \gets$ all tuples $(j,i,t) \in S$ that are for an advertiser which has an ad in $S'$
+\STATE $D \gets$ the set of $\max\{|(S\cup S') \setminus (B\cup C)|- \beta, 0 \}$ tuples in $(S\cup S') \setminus (B\cup C)$ of least profit
+\IF{$W((S\cup S') \setminus (B\cup C \cup D)) > W(S^* )$}
+\STATE $\alpha \gets 1$
+\STATE $S^* \gets (S\cup S') \setminus (B\cup C\cup D)$
+\ENDIF
+\ENDFOR
+\STATE $S \gets S^*$
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+Let $S$ be the final set computed by the local search algorithm.  Let $O$ be the tuples in a fixed optimal solution.  Our goal is to bound $W(O)$ by $W(A)$. To bound the performance of the algorithm, we will use the following random process.   Let $\delta$ be a random variable chosen uniformly at random in $[0,1]$.  Let $r = \delta \frac{5}{\eps} \Delta$.   Using $r$, we partition the optimal solution.  Let $O_k$ contain  all tuples $(j,i,t) \in O$  such that $t \in [r\cdot k, r \cdot (k+1))$ for $k \in 0, 1, \ldots \lceil \eps \beta / 5 \rceil$.  
+
+We make the following observations.  The following observation follows since each ad has size at least $1$, no two ads are placed with overlapping lines in a feasible solution and the interval $[r\cdot k, r \cdot (k+1))$ has length at most $\frac{5}{\eps}\Delta$.
+
+\begin{observation}
+\label{obs:swapjob}
+Each set $O_k$ contains at most $\frac{5}{\eps} \Delta +2 \leq \frac{10}{\eps}\Delta$ ads.  
+\end{observation}
+
+%\begin{observation}
+%For each tuple $(j,i,t) \in O$, the probability  that 
+%\end{observation}
+
+The following claim follows since each advertiser has size at most $\Delta$ and $r$ is uniformly distributed between $0$ and $\frac{5}{\eps} \Delta$.
+
+\begin{claim}
+\label{claim:probjob}
+Consider any tuple $(j,i,t) \in S$.  The probability that there is an integer $k$ such that $rk \in [t,t+s_{j,i}]$ is at most $\eps$.  Further, there is at most one value of $k$ such that $rk \in [t,t+s_{j,i}]$.
+\end{claim}
+
+Let $B_k$ be the set of tuples $(j,i,t)$ in $S$ such that the set $(j,i,t) \cup O_k$ has two intervals which overlap at some line.  Let $C_k$ contain all tuples $(j,i,t) \in S$ such that  there is a tuple $(j,i',t')\in O_k$ for any $i'$ and $t'$. Let $D_k$ be the set of $\max\{|(S\cup S') \setminus (B_k\cup C_k)| - \beta,0\}$ tuples in $(S\cup O_k) \setminus (B_k\cup C)_k$ of least profit.  Intuitively, the set of intervals in $B_k \cup C_k \cup D_k$ are the ones where if we were to add $O_k$ to $S$ then we would need to remove $B_k \cup C_k \cup D_k$ to make the set feasible.
+
+\begin{lemma}
+\label{lem:swapboundjob}
+$W(B_k \cup C_k \cup D_k) \geq W(O_k)$ for all $k \in [ \lceil \eps \beta / 5 \rceil]$.
+\end{lemma}
+\begin{proof}
+For any $k$, Observation~\ref{obs:swapjob} implies that $O_k$ is a valid set to consider for a swap.  Further, by removing $B_k, C_k$ and $D_k$ from the solution $S$ we can feasibly add $O_k$ to $S$.  The algorithm would not terminate if $W(B_k \cup C_k \cup D_k) < W(O_k)$, thus the lemma follows.
+
+
+
+%For the sake of contradiction say this is not the case for some $k$.  We know that $W(S) = W(S\setminus (B_k \cup C_k \cup D_k)) + W((B_k \cup C_k \cup D_k))$.  Further, we know that $W((S\setminus (B_k \cup C_k\cup D_k)) \cup O_k ) = W((S\setminus (B_k \cup C_k\cup D_k)) +W(O_k )$.  By definition of the algorithm and Observation~\ref{obs:swapjob}, $O_k$ is a valid set to swap into $S$.  Further, the algorithm would update $S$ if $W((S\setminus (B_k \cup C_k\cup D_k)) \cup O_k ) > W(S)$.  Thus, we have that $W((S\setminus (B_k \cup C_k\cup D_k))) +W(O_k ) = W((S\setminus (B_k \cup C_k\cup D_k)) \cup O_k ) \leq W(S) = W(S\setminus (B_k \cup C_k\cup D_k)) + W(B_k \cup C_k)$. This implies that $W(O_k) \leq W(B_k \cup C_k\cup D_k)$.
+
+\end{proof}
+
+\begin{claim}
+\label{claim:twicejob}
+Any tuple $(j,i,t) \in S$ belongs to at most two sets $B_k$ and $B_{k'}$.  Further, if $(j,i,t)$ is in two sets $B_k$ and $B_{k'}$ then $k$ and $k'$ are consecutive and there is a integer $k$ such that $rk \in [t,t+s_{j,i}]$.
+\end{claim}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Now we want to show that the total weight of intervals in the sets $C_k$ and $D_k$ is roughly at most $W(S)$.  We will first show how this lemma fits in with the overall argument and then later we will prove this lemma in Section~\ref{sec:lem}.
+
+\begin{lemma}
+\label{lem:map}
+$\sum_k W(C_k)+W(D_k) \leq \left (1 +  \frac{\eps}{(1-\frac{10\eps}{9})(1-\eps)} \right) W(S)$ assuming that $\beta \geq \frac{10}{\eps^2} \Delta$.
+\end{lemma}
+
+
+
+
+
+
+
+Let $T$ be the set of tuples $(j,i,t)$ such that there is more than one set $B_k$ that contain the tuple. 
+
+
+\begin{lemma}
+\label{lem:costjob}
+$W(S) + W(T)  +\sum_k ( W(C_k)+W(D_k))  \geq W(O)$
+\end{lemma}
+\begin{proof}
+\begin{eqnarray*}
+W(O) &=& \sum_k W(O_k)\\
+&\leq& \sum_k \left (W(B_k) + W(C_k) + W(D_k) \right) \;\;\;\; \mbox{[Lemma~\ref{lem:swapboundjob}]}\\
+&=& W(S) + W(T) +     \sum_k (W(C_k)+ W(D_k))  \;\;\;\; \mbox{[Claim~\ref{claim:twicejob}]}
+\end{eqnarray*}
+
+
+\end{proof}
+
+\begin{theorem}
+$(2+O(\eps))W(S) \geq W(O)$ for $\eps \leq \frac{1}{10}$.
+\end{theorem}
+\begin{proof}
+
+First we prove the claim in expectation.     Claim~\ref{claim:probjob} says that any interval $(j,i,t) \in S$ is also in $T$ with probability at most $\eps$.  By the linearity of expectation it is the case that $\textbf{E}[W(T)] \leq \sum_{(j,i,t) \in S} w_{j,i,t}\textbf{Pr}[(i,j,t) \in T] = \eps \sum_{(j,i,t) \in S} w_{j,i,t} = \eps W(S)$.  We also know that $\sum_k ( W(C_k)+W(D_k)) \leq  \left (1 +  \frac{\eps}{(1-\frac{10\eps}{9})(1-\eps)} \right) W(S)$ by Lemma~\ref{lem:map}.  Thus, $(2+O(\eps))W(S) \geq W(S) + \textbf{E}[W(T)] + \sum_k ( W(C)+W(D_k))$. Lemma~\ref{lem:costjob} gives that $W(S) + W(T) +\sum_k ( W(C_k)+W(D_k))  \geq W(O)$.  By  the probabilistic method, there is some choice of $\delta$ (which defines a set $T^*$) such that $(2+O(\eps))W(S) \geq W(S) + W(T^*) +\sum_k ( W(C_k)+W(D_k)) \geq W(O)$.
+
+\end{proof}
+
+\subsection{Proof of Lemma~\ref{lem:map}}
+\label{sec:lem}
+We break the proof into cases.
+
+\medskip \noindent \textbf{Case 1:} Assume that $|S| \leq \beta - \frac{10}{\eps} \Delta$.   We know that each set $|O_k| \leq  \frac{10}{\eps} \Delta$.  Thus, $D_k$ will be empty since $|S \cup O_k| \leq \beta$.  Further, we know that each tuple $(j,i,t)$ in $S$ appears in at most one set in $C_k$.   This is because, this tuple can only be in $C_k$ if  there is a tuple $(j,i',t') \in O_k$.  Knowing that the sets $O_k$ partition $O$ and that the optimal solution can include at most one tuple for each advertiser, the claim follows. Thus, $\sum_{k}(W(C_k + D_k)= \sum_{k} W(C_k) \leq W(S)$.
+
+
+\medskip \noindent \textbf{Case 2} $|S| > \beta - \frac{10}{\eps} \Delta$.  We begin by showing a simple claim.
+
+\begin{claim}
+\label{claim:smallcost}
+$w_{i,j,t} \leq \frac{W(S)}{(1-\frac{10\eps}{9})|S|}$ for any tuple $(j,i,t) \in D_k$ for any $k$ if $|S| > \beta - \frac{10}{\eps} \Delta$,  $\beta \geq \frac{10}{\eps^2}\Delta$, and $\eps \leq \frac{1}{10}$.
+\end{claim}
+
+\begin{proof}
+Fix any $k$ and a tuple $(j,i,t) \in D_k$.  We know that by the way tuples in $D_k$ are chosen, they are always the least profitable.  Further, by construction we know that $|D_k| \leq \frac{10}{\eps}\Delta$.  Thus, the value of a tuple in $D_k$ can be at most the $|S| - |D_k|$th least value tuple in $S$.  Hence, its value is at most $\frac{W(S)}{|S|-|D_k|} $.
+
+Now we further see that $|D_k| \leq  \frac{ 10\eps }{9}  |S|$.  This follows since,   
+
+\begin{eqnarray*}
+ \frac{|D_k|}{|S|} &\leq& \frac{ 10\Delta}{\eps |S|} \;\;\;\; \mbox{[$|D_k| \leq \frac{10}{\eps}\Delta$]}\\
+ &\leq&  \frac{ 10\Delta}{\eps (\beta - \frac{10}{\eps} \Delta)}  \;\;\;\; \mbox{[$|S| > \beta - \frac{10}{\eps} \Delta$]}\\
+  &\leq&  \frac{ 10\Delta}{\eps (\frac{10}{\eps^2}\Delta - \frac{10}{\eps} \Delta)}  \;\;\;\; \mbox{[$\beta \geq \frac{10}{\eps^2}\Delta$]}\\
+    &\leq&  \frac{ 10\eps }{9}    \;\;\;\; \mbox{[$\eps \leq \frac{1}{10}$]}
+\end{eqnarray*}
+
+Using this, $w_{j,i,t}$ is at most $\frac{W(S)}{|S|-|D_k|} \leq \frac{W(S)}{(1-\frac{10\eps}{9})|S|}$. 
+
+
+% \begin{eqnarray*}
+ %\frac{W(S)}{|S|-|D_k|} &\leq& \frac{W(S) 10\Delta}{\eps |S|} \;\;\;\; \mbox{[$|D_k| \leq \frac{10}{\eps}\Delta$]}\\
+ %\end{eqnarray*}
+
+
+
+%XXX
+ %\begin{eqnarray*}
+ %\frac{|D_k|W(S)}{|S|} &\leq& \frac{W(S) 10\Delta}{\eps |S|} \;\;\;\; \mbox{[$|D_k| \leq \frac{10}{\eps}\Delta$]}\\
+% &\leq&  \frac{W(S) 10\Delta}{\eps (\beta - \frac{10}{\eps} \Delta)}  \;\;\;\; \mbox{[$|S| > \beta - \frac{10}{\eps} \Delta$]}\\
+%  &\leq&  \frac{W(S) 10\Delta}{\eps (\frac{10}{\eps^2}\Delta - \frac{10}{\eps} \Delta)}  \;\;\;\; \mbox{[$\beta \geq \frac{10}{\eps^2}\Delta$]}\\
+   % &\leq&  \frac{ 10\eps }{9}  W(S)  \;\;\;\; \mbox{[$\eps \leq \frac{1}{10}$]}
+ %\end{eqnarray*}
+
+\end{proof}
+
+
+We create a mapping $g$ from most of the elements in $O$ to those in $S$.  In this mapping, each tuple in $S$ will be mapped to at most once and every tuple in $O$ maps to at most one in $S$.  Let $O^a$ be the set of tuples $(j,i,t)$ in $O$ such that there exists a tuple $(j,i',t') \in S$ for any $i',t'$ and set $g(j,i,t) = (j,i',t')$.   Now order the remaining tuples in $S$ and $O$ that have not been considered yet. Let $\ell$ be the number of tuples in $S$ that have yet to be mapped to.  Map up to $\ell$ remaining tuples from $O$ to $\ell$ unique tuples in $S$.  Let $O^b$ ($S^b$) be the tuples in $O$ ($S$) mapped in this step.  Finally, let $O^c$ be the remaining tuples in $O$ that have to be matched.  Note that $|O^c|$ could be empty.  
+
+\begin{claim}
+\label{claim:smallset}
+$|O^c| \leq \eps \beta$
+\end{claim}
+
+\begin{proof}
+If $O^c$ is non-empty then there were $|S|$ tuples in $O^a \cup O^b$. Knowing that $O^a, O^b, O^c$ is a partition of $O$, $|O| \leq \beta$ and $|S| \geq (1-\eps)\beta$ the claim follows.  
+\end{proof}
+
+ For simplicity we extend the definition of $g$ for sets. For a set $O' \subseteq O^a \cup O^b$ let $g(O')$ denote the set of tuples $\{(j,i,t)\; | \; (j',i't') \in O', g(j',i't') =(j,i,t)  \}$.   Now notice that $ \bigcup_k g(O_k \cap(O^a \cup O^b)) \subseteq S $ and $ g(O_k \cap O^a ) = C_k $ for all $k$.  These follow by definition of $O^a, O^b$ and $g$.  Finally, let $\tilde{D}_k$ be the $|D_k \setminus g(O^b \cap O_k)|$  tuples in $D_k$ with largest weight.  We see that,
+
+$$\sum_k(W(C_k) + W(D_k)) \leq \sum_k(g(O_k \cap(O^a \cup O^b)) + W(\tilde{D}_k ))$$
+
+This inequality follows since  $ g(O_k \cap O^a ) = C_k $, all tuples in $O^a \cup O^b$ map to unique tuples in $S$, and $D_k$ contains the least profitable tuples in $S$.  Now we have that,
+
+$$ \sum_k(g(O_k \cap(O^a \cup O^b)) + W(\tilde{D}_k )) \leq  W(S) + \sum_k W(\tilde{D}_k ).$$
+
+This follows since $ \bigcup_k g(O_k \cap(O^a \cup O^b)) \subseteq S $. Finally, we see that $\sum_k |\tilde{D}_k| \leq |O^c|$ since each tuple in $\tilde{D}_k$  corresponds to a tuple in $O_k$ that did not get mapped. Thus, we can prove the lemma.
+
+\begin{eqnarray*}
+\sum_k(W(C_k) + W(D_k)) &\leq& W(S) + \sum_k W(\tilde{D}_k )\\
+&=& W(S) + \sum_k \sum_{(j,i,t) \in \tilde{D}_k} w_{j,i,t}\\
+&\leq& W(S) + \sum_k \sum_{(j,i,t) \in \tilde{D}_k}  \frac{W(S)}{(1-\frac{10\eps}{9})|S|} \;\;\;\; \mbox{[Claim~\ref{claim:smallcost}]}\\
+&\leq& W(S) + \eps \beta  \frac{W(S)}{(1-\frac{10\eps}{9})|S|} \;\;\;\; \mbox{[Claim~\ref{claim:smallset}]}\\
+&\leq& W(S) \left (1 +  \frac{\eps}{(1-\frac{10\eps}{9})(1-\eps)} \right )\;\;\;\; \mbox{[$|S| \geq (1-\eps)\beta$]}\\
+\end{eqnarray*} 
+
+This proves the lemma.
+
+% Let $O^b$ be the set of remaining tuples in $O$ and $S^b$ be the remaining tuples in $S$.  Order the tuples in $O^b$ and $S^b$ in an arbitrary order.  Map the first $|S^b|$ tuples in $O^b$ to those in $S^b$ such that the $i$th tuple in the ordering of $\tdo$ maps to the $i$th tuple in the ordering of $S^b$.  Finally let $O^c$ be the remaining unmapped tuples in $O$.  If $|O^c| \geq |S|$ do not map the tuples in $O^c$ otherwise map a tuple in $O^c$ to any tuple in $S$ such that each tuple in $S$ gets mapped to by at most one tuple in $O^c$.
+
