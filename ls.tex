@@ -1,7 +1,7 @@
 
 
 \section{Local Search for Ad Placement}
-\labe{sec:ls}
+\label{sec:ls}
 
 In this section, we consider the case where there are  advertiser constraints, interval constraints and a cardinality constraint.  The goal a maximum weight set of intervals that do not intersect and at most one interval per advertiser.
 
@@ -11,22 +11,22 @@ In this section, we consider the case where there are  advertiser constraints, i
 \caption{Local Search Algorithm}
 %$\lsInterval$ \label{alg:ls}
 \begin{algorithmic}[1]
-\STATE $S^*,S \leftarrow \emptyset$
-\STATE $\alpha \gets 1$
-\WHILE{$\alpha \neq 0$}
+\State $S^*,S \leftarrow \emptyset$
+\State $\alpha \gets 1$
+\While{$\alpha \neq 0$}
 %\STATE $S^* \gets S$
-\FOR{every feasible set $S'$ of ads such that $|S'| \leq \frac{10}{\eps}\Delta$}
-\STATE $\alpha \gets 0$ 
-\STATE $B \gets$ all tuples $(j,i,t) \in S$ that intersect a tuple in $S'$
-\STATE $C \gets$ all tuples $(j,i,t) \in S$ that are for an advertiser which has an ad in $S'$
-\STATE $D \gets$ the set of $\max\{|(S\cup S') \setminus (B\cup C)|- \beta, 0 \}$ tuples in $(S\cup S') \setminus (B\cup C)$ of least profit
-\IF{$W((S\cup S') \setminus (B\cup C \cup D)) > W(S^* )$}
-\STATE $\alpha \gets 1$
-\STATE $S^* \gets (S\cup S') \setminus (B\cup C\cup D)$
-\ENDIF
-\ENDFOR
-\STATE $S \gets S^*$
-\ENDWHILE
+\For{every feasible set $S'$ of ads such that $|S'| \leq \frac{10}{\eps}\Delta$}
+\State $\alpha \gets 0$ 
+\State $B \gets$ all tuples $(j,i,t) \in S$ that intersect a tuple in $S'$
+\State $C \gets$ all tuples $(j,i,t) \in S$ that are for an advertiser which has an ad in $S'$
+\State $D \gets$ the set of $\max\{|(S\cup S') \setminus (B\cup C)|- \beta, 0 \}$ tuples in $(S\cup S') \setminus (B\cup C)$ of least profit
+\If{$W((S\cup S') \setminus (B\cup C \cup D)) > W(S^* )$}
+\State $\alpha \gets 1$
+\State $S^* \gets (S\cup S') \setminus (B\cup C\cup D)$
+\EndIf
+\EndFor
+\State $S \gets S^*$
+\EndWhile
 \end{algorithmic}
 \end{algorithm}
 
